@@ -179,7 +179,7 @@ void setup() {
   bd1.type = BodyType.STATIC; //THis one needs to be static
   border = box2d.createBody(bd1);
   PolygonShape ps1 = new PolygonShape();
-  ps1.setAsBox(box2d.scalarPixelsToWorld(w1/2), box2d.scalarPixelsToWorld(w/2)); //remember to use the right variable for width
+  ps1.setAsBox(box2d.scalarPixelsToWorld(w1/2), box2d.scalarPixelsToWorld(h/2)); //remember to use the right variable for width
   border.createFixture(ps, 1);
 }
 
@@ -196,4 +196,93 @@ void draw() {
 ```
 
 Ok, this is very quickly going to get very messy. In fact, it is alreaddy very messy. So let's make a couple of classes and do it again:
+
+```
+import shiffman.box2d.*;
+import org.jbox2d.collision.shapes.*;
+import org.jbox2d.common.*;
+import org.jbox2d.dynamics.*;
+Box2DProcessing box2d;
+
+Box box;
+Border border;
+
+void setup() {
+  size(600, 400);
+  box2d = new Box2DProcessing(this);
+  box2d.createWorld();
+
+  box = new Box(width/2, height/2, 16, 16);
+  border = new Border(width/2, height-8, width, 16);
+}
+
+void draw() {
+  background(50);
+  box2d.step();
+
+  box.display();
+  border.display();
+}
+
+class Border {
+
+  Body border;
+
+  float w, h;
+
+  Border(float x, float y, float iw, float ih) {
+    w = iw;
+    h = ih;
+
+    BodyDef bd = new BodyDef();
+    bd.position.set(box2d.coordPixelsToWorld(x, y));
+    bd.type = BodyType.STATIC;
+    border = box2d.createBody(bd);
+
+    PolygonShape ps = new PolygonShape();
+
+    ps.setAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(h/2));
+    border.createFixture(ps, 1);
+  }
+
+  void display() {
+    rectMode(CENTER);
+    fill(0);
+    Vec2 pos = box2d.getBodyPixelCoord(border);
+    rect(pos.x, pos.y, w, h);
+  }
+}
+
+
+class Box {
+
+  Body box;
+
+  float w, h;
+
+  Box(float x, float y, float iw, float ih) {
+    w = iw;
+    h = ih;
+
+    BodyDef bd = new BodyDef();
+    bd.position.set(box2d.coordPixelsToWorld(x, y));
+    bd.type = BodyType.DYNAMIC;
+    box = box2d.createBody(bd);
+
+    PolygonShape ps = new PolygonShape();
+    
+    ps.setAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(w/2));
+    box.createFixture(ps, 1);
+  }
+
+  void display() {
+    rectMode(CENTER);
+    fill(200);
+    Vec2 pos = box2d.getBodyPixelCoord(box);
+    rect(pos.x, pos.y, w, h);
+  }
+}
+```
+
+Ok, nothing really changed, except that we now have two classes. How is that better? Well, making an instance of a class is much easier and faster to do than to hard code every single object in the world. So that's the basics of Box2D. Happy coding
 
