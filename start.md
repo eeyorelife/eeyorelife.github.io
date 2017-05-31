@@ -2,13 +2,15 @@
 
 Ok, so I'll try to go through this step by step in a way that makes sense. The "making sense" part is definitely the hardest part.
 
-`import shiffman.box2d.*;
+```
+import shiffman.box2d.*;
 Box2DProcessing box2d;
 
 void setup(){
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
-}`
+}
+```
 
 ## AND WE ARE OFF
 _to an amazing start!_ The code works, it's short, it's runnable and it does absolutely nothing what so ever!
