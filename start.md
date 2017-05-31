@@ -78,5 +78,122 @@ void setup(){
 }
 ```
 
+You can't see it, but it is there! Our body, does not have a shape. It is a lonely soul without a human to inhabit. It has coordinates, but nothing else. We ned to create a shape
 
+### The shape
+What do we need to define a shape? We need to know what kind of shape we want to create and it's size. First, we make width and height variables like we are used to in Processing: `float w = 16, h = 16;`. Then we use the ´PolygonShape()´ class to create a new shape: `PolygonShape ps = new PolygonShape();` And then we set it as a box: `ps.setAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(w/2));`. Remember that coordinate problem? yes, that applies to size as well. So we need to use the function `scalarPixelsToWorld` to convert from Processing to Box2D. Also, why are we dividing width and height by 2? Because Box2D defines width as the distance from the center to the edge. Almost like a radius in a circle. Don't ask me how that makes sense. So the width will be half of the actual width of the body. And before we throw it all together we connect the body and the shape with a fixture. For now, I think it's ok if Box2D just creates a default fixture for us: `body.createFixture(ps,1);` Throwing it all together again:
+
+```
+import shiffman.box2d.*;
+import org.jbox2d.collision.shapes.*;
+import org.jbox2d.common.*;
+import org.jbox2d.dynamics.*;
+Box2DProcessing box2d;
+Body body;
+
+void setup(){
+  box2d = new Box2DProcessing(this);
+  box2d.createWorld();
+  
+  BodyDef bd = new BodyDef();
+  bd.position.set(box2d.coordPixelsToWorld(width/2,height/2));
+  bd.type = BodyType.DYNAMIC;
+  
+  body = box2d.createBody(bd);
+  
+  PolygonShape ps = new PolygonShape();
+  ps.SetAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(w/2));
+  
+  body.createFixture(ps,1);
+}
+```
+
+Lok at that! We have a bogy, we have a shape, we have a fixture! But we still can't see it... How do we know where it is? Box2D does all the calcutation, so it holds all the information. Where everything is and where it is headed. So what do we do? We ask for it: `Vec2 pos = box2d.getBodyPixelCoord(body);`. And then we can use that information to draw it: `rect(pos.x, pos.y, w,h);` But it doesn't move? Why is it not reacting to any forces? Because time is standing still. That's right, we have to step through _time_: `box2d.step();` Oh, and we will have to change the reectMode: `rectMode(CENTER);`
+
+Now, we can see it move:
+
+```
+import shiffman.box2d.*;
+import org.jbox2d.collision.shapes.*;
+import org.jbox2d.common.*;
+import org.jbox2d.dynamics.*;
+Box2DProcessing box2d;
+Body body;
+
+float w = 16, h = 16;
+
+void setup(){
+  box2d = new Box2DProcessing(this);
+  box2d.createWorld();
+  
+  BodyDef bd = new BodyDef();
+  bd.position.set(box2d.coordPixelsToWorld(width/2,height/2));
+  bd.type = BodyType.DYNAMIC;
+  
+  body = box2d.createBody(bd);
+  
+  PolygonShape ps = new PolygonShape();
+  ps.setAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(w/2));
+  
+  body.createFixture(ps,1);
+}
+
+void draw(){
+  box2d.step();
+  rectMode(CENTER);
+  Vec2 pos = box2d.getBodyPixelCoord(body);
+  rect(pos.x, pos.y, w,h);
+}
+```
+WE MADE IT! We have a body, a shape, a fixture, and we can see it! It's a box! That was a lot of work just for a little rectangle falling off the screen. Let's make another one! But, lets try to make a static border on the bottom of the screen:
+
+```
+import shiffman.box2d.*;
+import org.jbox2d.collision.shapes.*;
+import org.jbox2d.common.*;
+import org.jbox2d.dynamics.*;
+Box2DProcessing box2d;
+Body box;
+Body border;
+
+float w = 16, h = 16;
+float w1; //I want this to be the width of the screen, so we have to assign the value in setup()
+
+void setup() {
+  size(600, 400); //let's give ourselves some more space
+  w1 = width;
+
+  box2d = new Box2DProcessing(this);
+  box2d.createWorld();
+  BodyDef bd = new BodyDef();
+  bd.position.set(box2d.coordPixelsToWorld(width/2, height/2));
+  bd.type = BodyType.DYNAMIC;
+  box = box2d.createBody(bd);
+  PolygonShape ps = new PolygonShape();
+  ps.setAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(w/2));
+  box.createFixture(ps, 1);
+
+
+  BodyDef bd1 = new BodyDef();
+  bd1.position.set(box2d.coordPixelsToWorld(width/2, height-(h/2))); //I want it to be at the bottom.
+  bd1.type = BodyType.STATIC; //THis one needs to be static
+  border = box2d.createBody(bd1);
+  PolygonShape ps1 = new PolygonShape();
+  ps1.setAsBox(box2d.scalarPixelsToWorld(w1/2), box2d.scalarPixelsToWorld(w/2)); //remember to use the right variable for width
+  border.createFixture(ps, 1);
+}
+
+void draw() {
+  box2d.step();
+  rectMode(CENTER);
+  Vec2 pos = box2d.getBodyPixelCoord(box);
+  rect(pos.x, pos.y, w, h);
+  
+  
+  Vec2 pos1 = box2d.getBodyPixelCoord(border);
+  rect(pos1.x, pos1.y, w1, h);
+}
+```
+
+Ok, this is very quickly going to get very messy. In fact, it is alreaddy very messy. So let's make a couple of classes and do it again:
 
