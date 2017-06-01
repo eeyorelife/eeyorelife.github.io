@@ -145,7 +145,7 @@ void draw(){
   rect(pos.x, pos.y, w,h);
 }
 ```
-WE MADE IT! We have a body, a shape, a fixture, and we can see it! It's a box! That was a lot of work just for a little rectangle falling off the screen. Let's make another one! But, lets try to make a static border on the bottom of the screen:
+WE MADE IT! We have a body, a shape, a fixture, and we can see it! It's a box! That was a lot of work just for a little rectangle falling off the screen. Let's make another one! But, lets try to make a static boundary on the bottom of the screen:
 
 ```
 import shiffman.box2d.*;
@@ -154,7 +154,7 @@ import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
 Box2DProcessing box2d;
 Body box;
-Body border;
+Body boundary;
 
 float w = 16, h = 16;
 float w1; //I want this to be the width of the screen, so we have to assign the value in setup()
@@ -177,10 +177,10 @@ void setup() {
   BodyDef bd1 = new BodyDef();
   bd1.position.set(box2d.coordPixelsToWorld(width/2, height-(h/2))); //I want it to be at the bottom.
   bd1.type = BodyType.STATIC; //THis one needs to be static
-  border = box2d.createBody(bd1);
+  boundary = box2d.createBody(bd1);
   PolygonShape ps1 = new PolygonShape();
   ps1.setAsBox(box2d.scalarPixelsToWorld(w1/2), box2d.scalarPixelsToWorld(h/2)); //remember to use the right variable for width
-  border.createFixture(ps, 1);
+  boundary.createFixture(ps, 1);
 }
 
 void draw() {
@@ -190,12 +190,12 @@ void draw() {
   rect(pos.x, pos.y, w, h);
   
   
-  Vec2 pos1 = box2d.getBodyPixelCoord(border);
+  Vec2 pos1 = box2d.getBodyPixelCoord(boundary);
   rect(pos1.x, pos1.y, w1, h);
 }
 ```
 
-Ok, this is very quickly going to get very messy. In fact, it is alreaddy very messy. So let's make a couple of classes and do it again:
+Ok, this is very quickly going to get very messy. In fact, it is already very messy. So let's make a couple of classes and do it again:
 
 ```
 import shiffman.box2d.*;
@@ -205,7 +205,7 @@ import org.jbox2d.dynamics.*;
 Box2DProcessing box2d;
 
 Box box;
-Border border;
+Boundary boundary;
 
 void setup() {
   size(600, 400);
@@ -213,7 +213,7 @@ void setup() {
   box2d.createWorld();
 
   box = new Box(width/2, height/2, 16, 16);
-  border = new Border(width/2, height-8, width, 16);
+  boundary = new Boundary(width/2, height-8, width, 16);
 }
 
 void draw() {
@@ -221,34 +221,34 @@ void draw() {
   box2d.step();
 
   box.display();
-  border.display();
+  boundary.display();
 }
 
-class Border {
+class Boundary {
 
-  Body border;
+  Body boundary;
 
   float w, h;
 
-  Border(float x, float y, float iw, float ih) {
+  Boundary(float x, float y, float iw, float ih) {
     w = iw;
     h = ih;
 
     BodyDef bd = new BodyDef();
     bd.position.set(box2d.coordPixelsToWorld(x, y));
     bd.type = BodyType.STATIC;
-    border = box2d.createBody(bd);
+    boundary = box2d.createBody(bd);
 
     PolygonShape ps = new PolygonShape();
 
     ps.setAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(h/2));
-    border.createFixture(ps, 1);
+    boundary.createFixture(ps, 1);
   }
 
   void display() {
     rectMode(CENTER);
     fill(0);
-    Vec2 pos = box2d.getBodyPixelCoord(border);
+    Vec2 pos = box2d.getBodyPixelCoord(boundary);
     rect(pos.x, pos.y, w, h);
   }
 }
@@ -284,5 +284,5 @@ class Box {
 }
 ```
 
-Ok, nothing really changed, except that we now have two classes. How is that better? Well, making an instance of a class is much easier and faster to do than to hard code every single object in the world. So that's the basics of Box2D. Happy coding
+Ok, nothing really changed, except that we now have two classes. How is that better? Well, making an instance of a class is much easier and faster to do than to hard code every single object in the world. So that's the basics of Box2D. Happy coding!
 
