@@ -284,5 +284,21 @@ class Box {
 }
 ```
 
-Ok, nothing really changed, except that we now have two classes. How is that better? Well, making an instance of a class is much easier and faster to do than to hard code every single object in the world. So that's the basics of Box2D. Happy coding!
+Ok, nothing really changed, except that we now have two classes. How is that better? Well, making an instance of a class is much easier and faster to do than to hard code every single object in the world.So that was the most basic parts of Box2D. But if we want to do really interesting things, we want to be able to manipulate the physics of the world. Let's start with the physics of the box we just created.
+
+### The Fixture
+
+A box is fine, but what is it made of? Is it a slippe ice block? Or is it a heavy box that can break other objects? Or maybe it's block of jelly squishy and/or bouncy. We can specify these details by specifying the Fixture Defenition: `FixtureDef fd = new FixtureDef();`. Now, we have to assign our shape to the fixture: `fd.shape = sd;`. The fixture and the shape are now connected and we can specify the physics of the box. The _density_ will affect its wheight (mass): `fd.density = 1;`. The _friction_ is quite self explanatory: `fd.friction = 0.3;`. The _restitution_ will determin it's bounciness: `fd.restitution = 0.5;`. When we connect the fixture and the body, we now use our own fixture instead of a default one: `box.createFixture(fd);` Now the box is a tiny bit more exciting:
+
+```
+FixtureDef fd = new FixtureDef();
+fd.shape = ps;
+// Parameters that affect physics1    fd.density = 1;
+fd.friction = 0.3;
+fd.restitution = 0.5;
+ 
+box.createFixture(fd);
+```
+
+
 
