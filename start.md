@@ -284,7 +284,7 @@ class Box {
 }
 ```
 
-Ok, nothing really changed, except that we now have two classes. How is that better? Well, making an instance of a class is much easier and faster to do than to hard code every single object in the world.So that was the most basic parts of Box2D. But if we want to do really interesting things, we want to be able to manipulate the physics of the world. Let's start with the physics of the box we just created.
+Ok, nothing really changed, except that we now have two classes. How is that better? Well, making an instance of a class is much easier and faster to do than to hard code every single object in the world. So that is the most basic parts of Box2D. But if we want to do really interesting things, we want to be able to manipulate the physics of the world. Let's start with the physics of the box we just created.
 
 ### The Fixture
 
