@@ -165,6 +165,7 @@ void setup() {
 
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
+  
   BodyDef bd = new BodyDef();
   bd.position.set(box2d.coordPixelsToWorld(width/2, height/2));
   bd.type = BodyType.DYNAMIC;
@@ -176,7 +177,7 @@ void setup() {
 
   BodyDef bd1 = new BodyDef();
   bd1.position.set(box2d.coordPixelsToWorld(width/2, height-(h/2))); //I want it to be at the bottom.
-  bd1.type = BodyType.STATIC; //THis one needs to be static
+  bd1.type = BodyType.STATIC; //This one needs to be static
   boundary = box2d.createBody(bd1);
   PolygonShape ps1 = new PolygonShape();
   ps1.setAsBox(box2d.scalarPixelsToWorld(w1/2), box2d.scalarPixelsToWorld(h/2)); //remember to use the right variable for width
