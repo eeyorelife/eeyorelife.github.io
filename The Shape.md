@@ -28,4 +28,4 @@ void setup(){
 }
 ```
 
-Lok at that! We have a body, we have a shape, we have a fixture! But the screen is _still_ empty! 
+Lok at that! We have a body, we have a shape, we have a fixture! [But the screen is _still_ empty!](Display)
