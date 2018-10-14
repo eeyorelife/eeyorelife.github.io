@@ -7,5 +7,5 @@ But no one is perfect. And, in my honest opinion, the chapter on physics librari
 
 This is work in progress. I intend to extend the 'tutorial' that covers the basics.
 
-I am not trying to replace Dan's chapter on Box2D. But I hope that this repository can be of help to someone who, like me, did not understand the first part of the chapter.
+I am not trying to replace Dan's chapter on Box2D. But I hope that this repository can be of help to someone who, like me, did not understand the first part of the chapter. Oh, and I am completely new to github, so I am not quite sure what the hell I am doing on that part either. 
 
