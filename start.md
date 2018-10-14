@@ -22,7 +22,7 @@ But we want more. We are not happy with an empty canvas and an empty world. We w
 
 1. Box2D is a comlicated world. It is not all flowers and unicorns chasing the rainbow. Box2D has _forces_ like _gravity_ and every single object needs to have a _body_ and a _shape_, and the body and the shape _**isn't even the same thing**_, we need to join them with a _fixture_. An we need to specify all of this for _**every single object in the Box2D world.**_ _Holy crap, I am already sweating._
 2. Box2D and Processing does not agree on coordinates. While Box2D is still hung up on that old fashioned _Cartesian_ coordiante system, Processing has moved on to the new and improved _computer graphics_ coordinate system. What does that mean? It means that `0,0`in processing is in the top left corner, while Box2D places `0,0` _in the middle of the screen_. But, that's not it. It get's worse. If you are familiar with processing, you know that the y-axis moves _downwards_, so the higher the y value, the lower you find yourself on the axis. But in Box2D it is apparently logical to move _up_ the y-axis by increasing the y value? _Who the hell do they think they are!?_
-3. I hope you didn't rage quit over that coordinate issue above, because there is an solution. Luckily, Box2D knows how _silly_ it is to stick to that old cartesion coordinate system. Therefore, it has included a set of functions that we can use to translate coordinates between the Box2D world and the processing window. If we want to translate from the processing coordinatesystem we can think of it as going from pixels on the screen to coordinates in a fictitious world. So the function is `box2d.coordPixelToWorld(x,y);` And it's the reverse if we want to move from the fictitious world on to the screen: `box2d.coordWordToPixel(x,y)`.
+3. I hope you didn't rage quit over that coordinate issue above, because there is an solution. Luckily, Box2D knows how _silly_ it is to stick to that old cartesion coordinate system. Therefore, it has included a set of functions that we can use to translate coordinates between the Box2D world and the processing window. If we want to translate from the processing coordinatesystem we can think of it as going from pixels on the screen to coordinates in a fictitious world. So the function is `box2d.coordPixelToWorld(x,y);` And it's the reverse if we want to move from the fictitious world on to the screen: `box2d.coordWordToPixel(x,y)`. But that is only when it comes to coordinates. If we want to describe the size of something, we also need to translate the information! The function is pretty similair: `box2d.scalarPixelToWorld(x,y);` and `box2d.scalarWordToPixel(x,y)`
 4. Processing and Box2D does not agree on vectors. Processing has a vector class: `PVector`, but Box2D has its own vector class: `Vec2`. But this isn't really a big deal, Box2D is doing all the calculations for us, the least we could do is to use it's own vector class.
 5. Every object in Box2D is one of three types: **Dynamic**, which means it collides with everything and moves around with the physics. **Static** Which means it won't budge. **Kinematic**, Which means it can be manipulated by manually by the user. It does not collide with static objects or Kinematic objects.
 
@@ -55,7 +55,7 @@ Woah, it still does nothing! That's _amazing_! Ok, ok calm down. We haven't actu
 ### The body
 The _body_ is the **soul** of the object. What? If it is the soul, then why is it called body? Does not a soul live inside a body? Ok, maybe it isn't the most accurate name, but it works, ok? It does the job. So what do we need to define a body? We need to know its position and its bodytype. So **let's do it!**
 
-We start by initializing the body: `Body body;` Done. Now, we need to define the body by using the `BodyDef` class: `BodyDef bd = new BodyDef();` And set it's position: `bd.position.set(box2d.coordPixelsToWorld(width/2,height/2));` Remember the issue with the coordinate systems? When we have set the coordinates, we can select a type: `bd.type = BodyType.DYNAMIC`. Now that the body is defined, we can put it create it like this: `body = box2d.createBody(bd);`
+We start by initializing the body: `Body body;` Done. Now, we need to define the body by using the `BodyDef` class: `BodyDef bd = new BodyDef();` And set it's position: `bd.position.set(box2d.coordPixelsToWorld(width/2,height/2));` When we have set the coordinates, we can select a type: `bd.type = BodyType.DYNAMIC`. Now that the body is defined, we can create it like this: `body = box2d.createBody(bd);`
 So, putting it all together:
 
 ```
@@ -64,24 +64,26 @@ import org.jbox2d.collision.shapes.*;
 import org.jbox2d.common.*;
 import org.jbox2d.dynamics.*;
 Box2DProcessing box2d;
-Body body;
+Body body; //Initializing the body
 
 void setup(){
   box2d = new Box2DProcessing(this);
   box2d.createWorld();
   
-  BodyDef bd = new BodyDef();
-  bd.position.set(box2d.coordPixelsToWorld(width/2,height/2));
-  bd.type = BodyType.DYNAMIC;
+  BodyDef bd = new BodyDef(); //Getting ready to define a new body
+  bd.position.set(box2d.coordPixelsToWorld(width/2,height/2)); // set the position of the body
+  bd.type = BodyType.DYNAMIC; //decide which bodytype we want. The three posibilities are dynamic, static and kinematic
   
   body = box2d.createBody(bd);
 }
 ```
 
-You can't see it, but it is there! Our body, does not have a shape. It is a lonely soul without a human to inhabit. It has coordinates, but nothing else. We ned to create a shape
+You can't see it, but it is there! Our body, does not have a shape. It is a lonely soul without a box to inhabit. It has coordinates, but nothing else. We ned to create a shape:
 
 ### The shape
-What do we need to define a shape? We need to know what kind of shape we want to create and it's size. First, we make width and height variables like we are used to in Processing: `float w = 16, h = 16;`. Then we use the ´PolygonShape()´ class to create a new shape: `PolygonShape ps = new PolygonShape();` And then we set it as a box: `ps.setAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(w/2));`. Remember that coordinate problem? yes, that applies to size as well. So we need to use the function `scalarPixelsToWorld` to convert from Processing to Box2D. Also, why are we dividing width and height by 2? Because Box2D defines width as the distance from the center to the edge. Almost like a radius in a circle. Don't ask me how that makes sense. So the width will be half of the actual width of the body. And before we throw it all together we connect the body and the shape with a fixture. For now, I think it's ok if Box2D just creates a default fixture for us: `body.createFixture(ps,1);` Throwing it all together again:
+What do we need to define a shape? We need to know what kind of shape we want to create and it's size. First, we make width and height variables like we are used to in Processing: `float w = 16, h = 16;`. Then we use the ´PolygonShape()´ class to create a new shape: `PolygonShape ps = new PolygonShape();` And then we set it as a box: `ps.setAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(w/2));`. Okay, so we remembered to use `scalarPixelsToWorld` to convert size from Processing to Box2D. But why are we dividing width and height by 2? Because Box2D defines width as the distance from the center to the edge. Almost like a radius in a circle. Don't ask me how that makes sense. So the variable that hold the width will be half of the actual width of the body. 
+
+Now we have a body(soul) and a shape and they are beautiful! The only problem is that they are separate. They don't know each other yet. We need to _join_ them with a _fixture_. And that could get very comlicated, but _fortunately_ Box2D has made an option to just go with a default fixture. So we don't have to worry too much about it. Here is the easy way to create a fixture:  `body.createFixture(ps,1);` Throwing it all together again:
 
 ```
 import shiffman.box2d.*;
@@ -102,13 +104,13 @@ void setup(){
   body = box2d.createBody(bd);
   
   PolygonShape ps = new PolygonShape();
-  ps.SetAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(w/2));
+  ps.setAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(w/2));
   
   body.createFixture(ps,1);
 }
 ```
 
-Lok at that! We have a bogy, we have a shape, we have a fixture! But we still can't see it... How do we know where it is? Box2D does all the calcutation, so it holds all the information. Where everything is and where it is headed. So what do we do? We ask for it: `Vec2 pos = box2d.getBodyPixelCoord(body);`. And then we can use that information to draw it: `rect(pos.x, pos.y, w,h);` But it doesn't move? Why is it not reacting to any forces? Because time is standing still. That's right, we have to step through _time_: `box2d.step();` Oh, and we will have to change the reectMode: `rectMode(CENTER);`
+Lok at that! We have a body, we have a shape, we have a fixture! But the screen is _still_ empty! Since we have handed over the job of handling the information and calculation of the object to Box2D, we have to _retrieve_ them  from Box2D when we have need for them. Here is how you ask for coordinates of the body we have just created: `Vec2 pos = box2d.getBodyPixelCoord(body);`. And then we can use that information to draw it: `rect(pos.x, pos.y, w,h);` But it won't move yet. It won't react to any _forces_. It's going to stand completely still until we start _moving through time_. That's right, we have to step through _time_: `box2d.step();` Oh, and we will have to change the rectMode: `rectMode(CENTER);`, so that we are drawing the rectangle at the correct position.
 
 Now, we can see it move:
 
@@ -181,7 +183,7 @@ void setup() {
   boundary = box2d.createBody(bd1);
   PolygonShape ps1 = new PolygonShape();
   ps1.setAsBox(box2d.scalarPixelsToWorld(w1/2), box2d.scalarPixelsToWorld(h/2)); //remember to use the right variable for width
-  boundary.createFixture(ps, 1);
+  boundary.createFixture(ps1, 1);
 }
 
 void draw() {
@@ -196,7 +198,7 @@ void draw() {
 }
 ```
 
-Ok, this is very quickly going to get very messy. In fact, it is already very messy. So let's make a couple of classes and do it again:
+Ok, this is very quickly going to get very messy. In fact, it is already very messy. So let's make a couple of classes and do it all over again:
 
 ```
 import shiffman.box2d.*;
