@@ -1,4 +1,4 @@
-### Displaying the objects
+## Displaying the objects
 
 Since we have handed over the job of handling the information and calculation of the object to Box2D, we have to _retrieve_ them  from Box2D when we have need for them. Here is how you ask for coordinates of the body we have just created: `Vec2 pos = box2d.getBodyPixelCoord(body);`. And then we can use that information to draw it: `rect(pos.x, pos.y, w,h);` But it won't move yet. It won't react to any _forces_. It's going to stand completely still until we start _moving through time_. That's right, we have to step through _time_: `box2d.step();` Oh, and we will have to change the rectMode: `rectMode(CENTER);`, so that we are drawing the rectangle at the correct position.
 
