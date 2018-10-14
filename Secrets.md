@@ -6,4 +6,4 @@
 4. Processing and Box2D does not agree on vectors. Processing has a vector class: `PVector`, but Box2D has its own vector class: `Vec2`. But this isn't really a big deal, Box2D is doing all the calculations for us, the least we could do is to use it's own vector class.
 5. Every object in Box2D is one of three types: **Dynamic**, which means it collides with everything and moves around with the physics. **Static** Which means it won't budge. **Kinematic**, Which means it can be manipulated by manually by the user. It does not collide with static objects or Kinematic objects.
 
-I think that was it actually. For now at least. [Let's move on](Becoming an object). 
+I think that was it actually. For now at least. [Let's move on](Object). 
