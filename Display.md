@@ -35,4 +35,54 @@ void draw(){
   rect(pos.x, pos.y, w,h);
 }
 ```
-WE MADE IT! We have a body, a shape, a fixture, and we can see it! It's a box! That was a lot of work just for a little rectangle falling off the screen. Let's make another one!
+WE MADE IT! We have a body, a shape, a fixture, and we can see it! It's a box! That was a lot of work just for a little rectangle falling off the screen. Let's make another one! But lets try to make a static boundary on the bottom of the screen:
+
+```
+import shiffman.box2d.*;
+import org.jbox2d.collision.shapes.*;
+import org.jbox2d.common.*;
+import org.jbox2d.dynamics.*;
+Box2DProcessing box2d;
+Body box;
+Body boundary;
+
+float w = 16, h = 16;
+float w1; //I want this to be the width of the screen, so we have to assign the value in setup()
+
+void setup() {
+  size(600, 400); //let's give ourselves some more space
+  w1 = width;
+
+  box2d = new Box2DProcessing(this);
+  box2d.createWorld();
+  
+  BodyDef bd = new BodyDef();
+  bd.position.set(box2d.coordPixelsToWorld(width/2, height/2));
+  bd.type = BodyType.DYNAMIC;
+  box = box2d.createBody(bd);
+  PolygonShape ps = new PolygonShape();
+  ps.setAsBox(box2d.scalarPixelsToWorld(w/2), box2d.scalarPixelsToWorld(w/2));
+  box.createFixture(ps, 1);
+
+
+  BodyDef bd1 = new BodyDef();
+  bd1.position.set(box2d.coordPixelsToWorld(width/2, height-(h/2))); //I want it to be at the bottom.
+  bd1.type = BodyType.STATIC; //This one needs to be static
+  boundary = box2d.createBody(bd1);
+  PolygonShape ps1 = new PolygonShape();
+  ps1.setAsBox(box2d.scalarPixelsToWorld(w1/2), box2d.scalarPixelsToWorld(h/2)); //remember to use the right variable for width
+  boundary.createFixture(ps1, 1);
+}
+
+void draw() {
+  box2d.step();
+  rectMode(CENTER);
+  Vec2 pos = box2d.getBodyPixelCoord(box);
+  rect(pos.x, pos.y, w, h);
+  
+  
+  Vec2 pos1 = box2d.getBodyPixelCoord(boundary);
+  rect(pos1.x, pos1.y, w1, h);
+}
+```
+
