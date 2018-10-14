@@ -48,4 +48,4 @@ void setup(){
 }
 ```
 
-You can't see it, but it is there! Our body, does not have a shape. It is a lonely soul without a box to inhabit. It has coordinates, but nothing else. [We ned to create a shape](The Shape)
+You can't see it, but it is there! Our body, does not have a shape. It is a lonely soul without a box to inhabit. It has coordinates, but nothing else. [We ned to create a shape](Shape)
